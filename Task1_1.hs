@@ -26,12 +26,29 @@ infixl 7 |*|
 -- Заменить переменную `varName` на `replacement`
 -- во всём выражении `expression`
 replaceVar :: String -> Term -> Term -> Term
-replaceVar varName replacement expression = expression
-replaceVar varName replacement (Variable var) = if var == varName then replacement else Variable var
-replaceVar varName replacement (BinaryTerm lhv op rhv) = BinaryTerm (replaceVar varName replacement lhv) op (replaceVar varName replacement rhv)
+replaceVar varName replacement expression = case expression of
+    Variable var -> if var == varName then replacement else Variable var
+    BinaryTerm lhv op rhv -> BinaryTerm (replaceVar varName replacement lhv) op (replaceVar varName replacement rhv)
+    _ -> expression
 
 
 -- Посчитать значение выражения `Term`
--- если оно состоит только из константа
+-- если оно состоит только из констант
 evaluate :: Term -> Term
-evaluate expression = todo
+evaluate expression = case expression of
+    BinaryTerm lhv op rhv -> case (l, op, r) of
+        (l, Add, IntConstant 0) -> l
+        (IntConstant 0, Add, r) -> r
+        (IntConstant l, Add, IntConstant r) -> IntConstant $ r + l
+        (IntConstant l, Sub, IntConstant r) -> IntConstant $ l -r
+        (l, Sub, IntConstant 0) -> l
+        (IntConstant l, Mult, IntConstant r) -> IntConstant $ l * r
+        (l, Mult, IntConstant 0) -> IntConstant 0
+        (IntConstant 0, Mult, r) -> IntConstant 0
+        (l, Mult, IntConstant 1) -> l
+        (IntConstant 1, Mult, r) -> r
+        _ -> BinaryTerm l op r
+        where
+            l = evaluate lhv
+            r = evaluate rhv
+    _ -> expression
