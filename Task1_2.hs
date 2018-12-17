@@ -45,7 +45,8 @@ pow x y | y == 0 = 1
 
 pow' :: Integer -> Integer -> Integer -> Integer
 pow' x t 1 = x 
-pow' x t y = pow' (t*x) t (y-1)
+pow' x t y | even y = pow' (x*x) t (y `div` 2)
+           | otherwise = pow' (t*x) t (y-1)
 
 -- является ли данное число простым?
 isPrime :: Integer -> Bool
