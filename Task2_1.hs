@@ -59,7 +59,7 @@ moveNodes k (Node k1 l1 v1 r1) (Node k2 l2 v2 r2) | k > k2 = Node k2 (insert (k1
 nearestLE :: Integer -> TreeMap v -> (Integer, v)
 nearestLE i (Node k l v r) | k == i = (k,v) 
                            | otherwise = case (l, r) of
-                                    (EmptyTreeMap, EmptyTreeMap) -> (k,v)
+                                    (EmptyTreeMap, EmptyTreeMap) -> if  k > i then error "nLE not found" else (k,v)
                                     (_, EmptyTreeMap) -> if k > i then nearestLE i l else (k,v)
                                     (EmptyTreeMap, _) -> if k < i then nearestLE i r else (k,v)
                                     _ -> if k > i then  nearestLE i l else nearestLE i r
