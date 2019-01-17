@@ -74,12 +74,13 @@ listFromTree :: TreeMap v -> [(Integer, v)]
 listFromTree EmptyTreeMap = []
 listFromTree (Node k l v r) = listFromTree l ++ [(k, v)] ++ listFromTree r
 
-treeMapSize :: TreeMap v -> Integer
-treeMapSize (Node _ l _ r) = treeMapSize l + 1 + treeMapSize r
-
 -- Поиск k-той порядковой статистики дерева 
 kMean :: Integer -> TreeMap v -> (Integer, v)
 kMean _ EmptyTreeMap = error "Tree is empty"
-kMean i (Node k l v r) | treeMapSize l == i = (k,v)
-                       | treeMapSize l > i  = kMean i l
-                       | otherwise = kMean (i - (treeMapSize l) - 1) r
+kMean  i v = flattenTree v !! fromIntegral i
+
+flattenTree :: TreeMap v -> [(Integer, v)]
+flattenTree t = inorder t [] where
+    inorder :: TreeMap v -> [(Integer, v)] -> [(Integer, v)]
+    inorder EmptyTreeMap = id
+    inorder (Node k l v r) = inorder l . ((k,v) :) . inorder r
