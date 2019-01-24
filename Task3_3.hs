@@ -9,7 +9,7 @@ newtype PSet a = PSet{ contains :: (a -> Bool) }
 -- Объясните в комментариях, почему они реализованы именно так
 
 
--- 1. Сумма множеств (A ∪ B), моноидом для этой операции будет являться (a -> False)
+-- 1. Сумма множеств (A ∪ B), нейтральным элементом моноида для этой операции будет являться (a -> False)
 -- [ элемент может не находится в одном из множеств ]
 
 newtype PSetAdd a = PSetAdd { containsAdd :: (a -> Bool) }
@@ -20,7 +20,7 @@ instance Monoid (PSetAdd a) where
 instance Semigroup (PSetAdd a) where
     (<>) (PSetAdd a) (PSetAdd b) = PSetAdd(\x -> a x || b x)
 
--- 2. Произведение множеств (A ∩ B), моноидом для этой операции будет являться (a -> True)
+-- 2. Произведение множеств (A ∩ B), нейтральным элементом моноида для этой операции будет являться (a -> True)
 -- [ элемент может входить в множество А, но при этом не находится в множестве B ]
 
 newtype PSetOr a = PSetOr { containsOr :: (a -> Bool) }
@@ -31,7 +31,7 @@ instance Monoid (PSetOr a) where
 instance Semigroup (PSetOr a) where
     (<>) (PSetOr a) (PSetOr b) = PSetOr(\x -> a x && b x)
 
--- 3. Симметричная разность множеств (A Δ B), моноидом для этой операции будет являться (a -> False) 
+-- 3. Симметричная разность множеств (A Δ B), нейтральным элементом моноида для этой операции будет являться (a -> False) 
 -- [ элемент может не находится в одном из множеств, значит он не на пересечении и находится в другом множестве ]
 
 newtype PSetSymDiff a = PSetSymDiff { containsSymDiff :: (a -> Bool) }
